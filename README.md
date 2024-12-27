@@ -1,51 +1,78 @@
-Role Name
+User
 =========
 
-A brief description of the role goes here.
+Роль для создания пользователей, настройки паролей, назначения прав sudo и добавления SSH-ключей.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Роль не требует дополнительных зависимостей, за исключением стандартных модулей Ansible. Для работы всех задач необходимы модули `ansible.builtin.user`, `ansible.posix.authorized_key` и `community.general.sudoers`.  
 
 Role Variables
 --------------
-
+```yaml
 users:
-- user_name:
-  user_password:
-  user_sudo:
-  user_sudoers:
-  user_ssh_key:
+  - user_name: <имя пользователя>
+    user_password: <пароль>
+    user_sudo: <доступ к sudo (yes/no)>
+    user_sudoers: <список команд sudo>
+    user_ssh_key: <список публичных SSH-ключей>
+```
+`users`
+Список пользователей для выполнения роли.
 
-users - список пользователей для выполнения роли
+`user_name`
+Имя пользователя, который будет создан или проверен.
 
-user_name - имя пользователя для проверки и создания
+`user_password`
+Пароль, который будет установлен пользователю. Если не указан, пользователь будет создан с `default_user_password` из `defaults`.
 
-user_password - пароль, который будет присвоен пользователю
+`user_sudo`
+Определяет, нужно ли добавлять пользователя в группу sudo. Принимает значения yes или no.
 
-user_sudo - добавление пользователя в группу sudo
+`user_sudoers`
+Список команд, которые пользователь сможет выполнять через sudo без необходимости указывать пароль.
 
-user_sudoers - команды, которые требуют повышения привелегий и  пользователь сможет выполнять без использования sudo
+`user_ssh_key`
+Список публичных SSH-ключей, которые будут добавлены для пользователя.
 
-user_ssh_key - публичные ssh-ключи, которые будут добавлены для пользователя
-
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Роль не зависит от других ролей.
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+Примеры использования роли с переданными переменными:
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+- hosts: all
+  roles:
+    - role: user
+      vars:
+        users:
+          - user_name: "dev-user"
+            user_password: $ANSIBLE_VAULT;
+            user_sudo: "yes"
+            user_sudoers:
+            - /bin/systemctl stop systemd-journald
+            - /bin/systemctl start systemd-journald
+            user_ssh_key:
+            - /root/.ssh/id_ed25519.pub
+          - user_name: "prod-user"
+            user_password: $ANSIBLE_VAULT;
+            user_sudo: "yes"
+            user_sudoers:
+            - /bin/systemctl restart rsyslog
+            - /bin/systemctl stop rsyslog
+            user_ssh_key:
+            - /root/.ssh/id_rsa.pub
+
+```
+
+
 
 License
 -------
@@ -55,4 +82,5 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Mikhail Merkushev
+freeedomall@list.ru
