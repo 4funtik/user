@@ -1,29 +1,14 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # tasks file for user
-- name: create user
-  user:
-    name: "{{ item.user_name }}"
-    password: "{{ default_user_password }}"
-    shell: /bin/bash
-  loop: "{{ users }}"
-  vars:
-    user: "{{ item }}"
-  when:
-  - item.user_name is defined
-  - item.user_password is undefined
-    
 - name: set user password
   user:
     name: "{{ item.user_name }}"
-    password: "{{ item.user_password }}"
+    password: "{{ item.user_password|default(default_user_password) }}"
     shell: /bin/bash
   loop: "{{ users }}"
   vars:
     user: "{{ item }}"
-  when:
-  - item.user_name is defined
-  - item.user_password is defined
 
 - name: add user to sudo group
   user:
@@ -35,7 +20,6 @@
     user: "{{ item }}"
   when: 
   - item.user_sudo=="yes"
-  - item.user_name is defined
   
 - name: edit sudoers for user
   community.general.sudoers:
@@ -45,7 +29,6 @@
     state: present
   loop: "{{ users }}"
   when: 
-  - item.user_name is defined
   - item.user_sudoers is defined
 
 - name: Add SSH public keys
@@ -57,5 +40,4 @@
     - "{{ users }}"
     - user_ssh_key
   when: 
-  - item.0.user_name is defined
   - item.1 is defined
