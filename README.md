@@ -1,12 +1,12 @@
 User
 =========
 
-Роль для создания пользователей, настройки паролей, назначения прав sudo и добавления SSH-ключей.
+A role for creating users, setting passwords, assigning sudo privileges, and adding SSH keys.
 
 Requirements
 ------------
 
-Роль не требует дополнительных зависимостей, за исключением стандартных модулей Ansible. Для работы всех задач необходимы модули `ansible.builtin.user`, `ansible.posix.authorized_key` и `community.general.sudoers`.  
+The role does not require additional dependencies except for standard Ansible modules. The following modules are necessary for all tasks: `ansible.builtin.user`, `ansible.posix.authorized_key` and `community.general.sudoers`.  
 
 Role Variables
 --------------
@@ -19,33 +19,33 @@ users:
     user_ssh_key: <список публичных SSH-ключей>
 ```
 `users`
-Список пользователей для выполнения роли.
+A list of users to be managed by the role.
 
 `user_name`
-Имя пользователя, который будет создан или проверен.
+The name of the user to create or validate.
 
 `user_password`
-Пароль, который будет установлен пользователю. Если не указан, пользователь будет создан с `default_user_password` из `defaults`.
+The password to assign to the user. If not provided, the user will be created with the  `default_user_password` from `defaults`.
 
 `user_sudo`
-Определяет, нужно ли добавлять пользователя в группу sudo. Принимает значения yes или no.
+Indicates whether the user should be added to the sudo group. Accepts `yes` or `no`.
 
 `user_sudoers`
-Список команд, которые пользователь сможет выполнять через sudo без необходимости указывать пароль.
+A list of specific commands the user can execute via sudo without requiring a password.
 
 `user_ssh_key`
-Список публичных SSH-ключей, которые будут добавлены для пользователя.
+A list of public SSH keys to be added for the user.
 
 
 Dependencies
 ------------
 
-Роль не зависит от других ролей.
+The role does not depend on any other roles.
 
 Example Playbook
 ----------------
 
-Примеры использования роли с переданными переменными:
+An example of using the role with variables passed:
 
 ```yaml
 - hosts: all
